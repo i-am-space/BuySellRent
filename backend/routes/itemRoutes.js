@@ -41,7 +41,7 @@ router.post("/add", authenticateToken, async (req, res) => {
       price,
       description,
       category,
-      sellerID: req.user.id
+      sellerId: req.user.id
     });
     console.log("Details of added item:", name, price, description, category);
     await newItem.save();
@@ -62,14 +62,14 @@ router.post("/addSample", authenticateToken, async (req, res) => {
           price: 50000,
           description: "A powerful gaming laptop.",
           category: "Electronics",
-          sellerID: req.user.id,
+          sellerId: req.user.id,
         },
         {
           name: "T-Shirt",
           price: 500,
           description: "Comfortable cotton t-shirt.",
           category: "Clothing",
-          sellerID: req.user.id,
+          sellerId: req.user.id,
         },
       ];
   
@@ -86,7 +86,7 @@ router.post("/addSample", authenticateToken, async (req, res) => {
 // Fetch specific item by ID
 router.get("/:id", authenticateToken, async (req, res) => {
     try {
-      const item = await Item.findById(req.params.id).populate("sellerID", "firstName email");
+      const item = await Item.findById(req.params.id).populate("sellerId", "firstName email");
       if (!item) {
         return res.status(404).json({ message: "Item not found" });
       }
@@ -112,7 +112,7 @@ router.get("/", authenticateToken, async (req, res) => {
   
       console.log("Query:", query); // Log the query for debugging
   
-      const items = await Item.find(query).populate("sellerID", "firstName email");
+      const items = await Item.find(query).populate("sellerId", "firstName email");
       console.log("Items found:", items); // Log the result
       res.json(items);
     } catch (error) {
@@ -127,7 +127,7 @@ router.delete("/:id", authenticateToken, async (req, res) => {
       if (!item) {
         return res.status(404).json({ message: "Item not found" });
       }
-      if (item.sellerID.toString() !== req.user.id) {
+      if (item.sellerId.toString() !== req.user.id) {
         return res.status(403).json({ message: "Unauthorized to delete this item" });
       }
       await Item.findByIdAndDelete(req.params.id);

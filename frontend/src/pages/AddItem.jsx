@@ -23,6 +23,7 @@ const AddItem = () => {
       const token = localStorage.getItem("token");
       if (!token) {
         alert("You must be logged in to add an item");
+        navigate('/login');
         return;
       }
   

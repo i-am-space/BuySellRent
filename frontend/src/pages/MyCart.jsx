@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 const MyCart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -17,6 +18,7 @@ const MyCart = () => {
       const res = await axios.get("http://localhost:5000/api/cart", {
         headers: { Authorization: `Bearer ${token}` },
       });
+      console.log(res.data);
       setCartItems(res.data);
       setTotalCost(res.data.reduce((acc, item) => acc + item.price, 0));
     } catch (error) {
@@ -36,31 +38,55 @@ const MyCart = () => {
     }
   };
 
+  const handleFinalOrder = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.post(
+        "http://localhost:5000/api/orders/place",
+        { cartItems },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      for (const item of cartItems) {
+        await removeFromCart(item._id);
+      }
+      // alert("Order placed successfully!");
+      navigate("/orders-history");
+    } catch (error) {
+      console.error("Error placing order:", error);
+      alert("Failed to place order");
+    }
+  };
+
   return (
-    <div className="container mx-auto p-8">
-      <h2 className="text-3xl font-bold mb-6 text-center">My Cart</h2>
-      <ul>
-        {cartItems.map((item) => (
-          <li key={item._id} className="flex justify-between border p-4 mb-2">
-            <div>
+    <div className="bg-gray-100 min-h-screen pt-20">
+      <Navbar />
+      <div className="container mx-auto p-8">
+        <h1 className="text-4xl font-bold mb-6 text-center">My Cart</h1>
+        {cartItems.length > 0 ? (
+          cartItems.map((item) => (
+            <div key={item._id} className="border p-4 mb-2 rounded-lg shadow-lg">
               <h3 className="text-xl font-bold">{item.name}</h3>
-              <p>Price: ${item.price}</p>
+              <p>Price: ₹{item.price}</p>
+              <button onClick={() => removeFromCart(item._id)} className="bg-red-500 text-white px-4 py-2 rounded">
+                Remove
+              </button>
             </div>
+            
+          ))
+        ) : (
+          <p className="text-lg text-gray-600 text-center">Your cart is empty.</p>
+        )}
+        {cartItems.length > 0 && (
+          <div className="flex justify-center mt-6">
             <button
-              onClick={() => removeFromCart(item._id)}
-              className="bg-red-500 text-white px-4 py-2 rounded"
+              onClick={handleFinalOrder}
+              className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition"
             >
-              Remove
+              Final Order
             </button>
-          </li>
-        ))}
-      </ul>
-      <h3 className="text-xl font-bold mt-4">Total: ${totalCost}</h3>
-      <button
-        className="bg-green-500 text-white py-3 rounded mt-4"
-      >
-        Final Order
-      </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

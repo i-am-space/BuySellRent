@@ -6,7 +6,6 @@ const cors = require("cors");
 const passport = require("passport");
 const session = require("express-session");
 
-
 // Load environment variables
 dotenv.config();
 
@@ -14,6 +13,8 @@ const app = express();
 app.use(express.json());
 const itemRoutes = require("./routes/itemRoutes");
 const cartRoutes = require("./routes/cartRoutes");
+const orderRoutes = require("./routes/orderRoutes");
+const supportRoutes = require("./routes/supportRoutes");
 // const cors = require("cors");
 
 // Allow both localhost and 127.0.0.1
@@ -35,12 +36,13 @@ app.use(cors({
   
 // Middleware
 app.use("/api/items", itemRoutes);
+app.use("/api/support", supportRoutes);
 app.use(session({ 
   secret: process.env.JWT_SECRET, 
   resave: false, 
   saveUninitialized: false 
 }));
-
+app.use("/api/orders", orderRoutes);
 app.use("/api/cart", cartRoutes);
 
 // Initialize Passport

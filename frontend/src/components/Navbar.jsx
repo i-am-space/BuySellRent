@@ -17,10 +17,11 @@ const Navbar = () => {
         <div className="space-x-6">
           <Link to="/profile" className="hover:text-gray-300">Profile</Link>
           <Link to="/search" className="hover:text-gray-300">Search Items</Link>
-          <Link to="/orders" className="hover:text-gray-300">Orders History</Link>
+          <Link to="/orders-history" className="hover:text-gray-300">Orders History</Link>
           <Link to="/cart" className="hover:text-gray-300">My Cart</Link>
           <Link to="/deliveries" className="hover:text-gray-300">Deliver Items</Link>
           <Link to="/add-item" className="hover:text-gray-300">Add Item</Link>
+          <Link to="/support" className="hover:text-gray-300">Support</Link>
           <button 
             onClick={handleLogout} 
             className="bg-red-500 px-4 py-2 rounded hover:bg-red-600 transition duration-300"

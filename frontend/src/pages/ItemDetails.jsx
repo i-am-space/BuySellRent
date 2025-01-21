@@ -50,7 +50,7 @@ const ItemDetails = () => {
             <p className="text-lg text-gray-600">{item.description}</p>
             <p className="text-lg font-bold mt-4">Price: ₹{item.price}</p>
             <p className="text-lg mt-2">Category: {item.category}</p>
-            <p className="text-lg mt-2">Seller: {item.sellerID.firstName} ({item.sellerID.email})</p>
+            <p className="text-lg mt-2">Seller: {item.sellerId?.firstName ? `${item.sellerId.firstName} (${item.sellerId.email})` : "Unknown Seller"}</p>
 
             <button
               onClick={handleAddToCart}

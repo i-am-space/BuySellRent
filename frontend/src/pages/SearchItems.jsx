@@ -81,21 +81,25 @@ const SearchItems = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
-        {items.map((item) => (
-          <div key={item._id} className="border p-4 rounded-lg shadow-lg">
-            <h3 className="text-xl font-bold">{item.name}</h3>
-            <p className="text-gray-600">Price: ${item.price}</p>
-            <p className="text-gray-500">Seller: {item.sellerName}</p>
-            <a href={`/item/${item._id}`} className="text-blue-500 mt-2 block">View Item</a>
-            {/* {item.sellerID === currentUser._id && (
-                <button onClick={() => handleDelete(item._id)} className="bg-red-500 text-white px-4 py-2 rounded mt-2">
-                    Remove
-                </button>
-                )} */}
-          </div>
-        ))}
-      </div>
+    <div className="grid grid-cols-3 gap-6">
+      {items.map((item) => (
+        <div key={item._id} className="border p-4 rounded-lg shadow-lg">
+          <h3 className="text-xl font-bold">{item.name}</h3>
+          <p className="text-gray-600">Price: ${item.price}</p>
+          <p className="text-gray-500">
+            Seller: {item.sellerId ? `${item.sellerId.firstName}` : "Unknown"}
+          </p>
+          <a href={`/item/${item._id}`} className="text-blue-500 mt-2 block">View Item</a>
+          {/* Conditional button rendering for item owner */}
+          {/* {item.sellerId && item.sellerId._id === currentUser._id && (
+            <button onClick={() => handleDelete(item._id)} className="bg-red-500 text-white px-4 py-2 rounded mt-2">
+              Remove
+            </button>
+          )} */}
+        </div>
+      ))}
+    </div>
+
     </div>
   );
 };

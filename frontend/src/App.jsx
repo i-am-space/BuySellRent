@@ -7,6 +7,9 @@ import Navbar from "./components/Navbar";
 import ItemDetails from "./pages/ItemDetails";
 import AddItem from "./pages/AddItem";
 import MyCart from "./pages/MyCart";
+import OrdersHistory from "./pages/OrdersHistory";
+import DeliverItems from "./pages/DeliverItems";
+import Support from "./pages/Support";
 
 const PrivateRoute = ({ element }) => {
   return localStorage.getItem("token") ? element : <Navigate to="/login" />;
@@ -39,6 +42,9 @@ const AppContent = () => {
         <Route path="/item/:itemId" element={<PrivateRoute element={<ItemDetails />} />} />
         <Route path="/add-item" element={<PrivateRoute element={<AddItem />} />} />
         <Route path="/cart" element={<PrivateRoute element={<MyCart />} />} />
+        <Route path="/orders-history" element={<PrivateRoute element={<OrdersHistory />} />} />
+        <Route path="/deliveries" element={<PrivateRoute element={<DeliverItems />} />} />
+        <Route path="/support" element={<PrivateRoute element={<Support />} />} />
       </Routes>
     </>
   );
