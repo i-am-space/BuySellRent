@@ -1,10 +1,12 @@
-
 const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const passport = require("passport");
 const session = require("express-session");
+const CAS = require("cas-authentication");  
+const User = require("./models/User"); // Ensure User model is imported
+const { generateToken } = require("./utils/token"); // Ensure generateToken function is imported
 
 // Load environment variables
 dotenv.config();
@@ -66,7 +68,42 @@ app.get("/", (req, res) => {
 
 // Routes
 const authRoutes = require("./routes/authRoutes");
+
+// CAS configuration
+const cas = new CAS({
+  cas_url: process.env.CAS_URL || 'https://login.iiit.ac.in/cas', // CAS server URL
+  service_url: process.env.SERVICE_URL || 'http://localhost:5000', // Your app's backend URL
+  cas_version: '3.0', // CAS protocol version
+});
+
 app.use("/api/auth", authRoutes);
+app.use((req, res, next) => {
+  req.cas = cas;
+  next();
+});
+
+// CAS Login Route
+app.get('/api/auth/cas/login', cas.bounce, async (req, res) => {
+  const username = req.session.cas_user;
+  const email = `${username}`; // Optionally append @students.iiit.ac.in or your domain
+
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      const token = generateToken(existingUser._id);
+      // Pass token in the hash so frontend can read it using window.location.hash
+      res.redirect(`${process.env.FRONTEND_URL}/profile`);
+    } else {
+      res.redirect(`${process.env.FRONTEND_URL}/register?email=${email}`);
+    }
+  } catch (error) {
+    console.error('CAS login error:', error);
+    res.redirect(`${process.env.FRONTEND_URL}/login?error=Authentication failed`);
+  }
+});
+
+// CAS Logout Route
+app.get('/api/auth/cas/logout', cas.logout);
 
 // Start the server
 const PORT = process.env.PORT || 5000;

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,6 +7,14 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = new URLSearchParams(window.location.hash.substring(1)).get('token');
+    if (token) {
+      localStorage.setItem('token', token);
+      navigate('/profile');
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,7 +31,9 @@ const Login = () => {
       alert('Login failed: ' + (error.response?.data?.message || 'Unknown error'));
     }
   };
-
+  const handleCasLogin = () => {
+    window.location.href = "http://localhost:5000/api/auth/cas/login";
+  };
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-200">
       <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-lg w-96">
@@ -48,6 +58,13 @@ const Login = () => {
         
         <button type="submit" className="bg-blue-500 w-full text-white py-3 rounded hover:bg-blue-700 transition">
           Login
+        </button>
+        <button
+          type="button"
+          className="bg-green-500 w-full text-white py-3 rounded mt-4 hover:bg-green-700 transition"
+          onClick={handleCasLogin}
+        >
+          Login with CAS
         </button>
       </form>
     </div>
