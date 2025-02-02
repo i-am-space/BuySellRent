@@ -16,6 +16,16 @@ router.post("/register", async (req, res) => {
     if (existingUser) {
       return res.status(400).json({ message: "Email already exists" });
     }
+    const validDomains = ["@students.iiit.ac.in", "@research.iiit.ac.in"];
+    const hasValidDomain = validDomains.some(domain => email.endsWith(domain));
+    if (!hasValidDomain) {
+      return res.status(400).json({ message: "Invalid email domain" });
+    }
+
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(contactNumber)) {
+      return res.status(400).json({ message: "Invalid phone number" });
+    }
 
     // Hash the password before saving
     const hashedPassword = await bcrypt.hash(password, 10);

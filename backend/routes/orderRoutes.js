@@ -53,7 +53,7 @@ router.post("/place", authenticateToken, async (req, res) => {
       itemsBySeller[sellerId].items.push(item);
       itemsBySeller[sellerId].totalPrice += item.price;
     }
-
+    
     // Now create an order per seller
     const orders = [];
     for (const sellerId in itemsBySeller) {

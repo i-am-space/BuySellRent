@@ -20,6 +20,18 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const validDomains = ["@students.iiit.ac.in", "@research.iiit.ac.in"];
+    const hasValidDomain = validDomains.some(domain => formData.email.endsWith(domain));
+    if (!hasValidDomain) {
+      alert("Please use an IIIT email (students or research).");
+      return;
+    }
+
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(formData.contactNumber)) {
+      alert("Please enter a valid 10-digit phone number.");
+      return;
+    }
     try {
       console.log("Sending request with:", formData);
       const response = await axios.post('http://localhost:5000/api/auth/register', formData);
